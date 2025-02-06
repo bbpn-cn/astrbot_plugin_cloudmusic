@@ -27,6 +27,13 @@
 /song 海阔天空
 ```
 
+### LLM 函数调用 
+
+默认支持通过自然语言搜歌，比如: `搜索 all my life 这首歌`
+
+需要模型支持函数调用，推荐 `gpt-4o-mini`
+
+关闭这个功能 `/tool off search_music`
 
 ## 支持
 

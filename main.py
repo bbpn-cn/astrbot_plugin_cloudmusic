@@ -82,7 +82,7 @@ class CloudMusicPlugin(Star):
             yield event.plain_result(f"发生错误: {e}")
         finally:
             await api.close()
-            
+                        
     @filter.command("song")
     async def get_song_list(self, event: AstrMessageEvent):
         '''搜索音乐并输出前 3 条文本的歌曲信息。/song song_name'''
@@ -105,8 +105,34 @@ class CloudMusicPlugin(Star):
                 result += f"   🆔 歌曲ID: {song['id']}\n"
                 result += f"   🎙️ 歌手: {', '.join(song['artists'])}\n"
                 result += f"   📀 专辑: {song['album']}\n"
+                result += f"   🔗 链接: https://music.163.com/#/song?id={song['id']}\n"
             result = event.plain_result(result)
             result.use_t2i(False)
             yield result
         except Exception as e:
             yield event.plain_result(f"搜索过程中出现错误: {e}")
+
+    @filter.llm_tool("search_music")
+    async def search_music(self, event: AstrMessageEvent, keyword: str):
+        '''根据关键词搜索音乐
+        
+        Args:
+            keyword(string): 音乐名或者关键词
+        '''
+        song_name = keyword
+        
+        api = NeteaseCloudMusicAPI()
+        try:
+            songs = await api.fetch_song_data(song_name, limit=3, pic=False)
+            if not songs:
+                return event.plain_result("未找到相关音乐。")
+            result = "🎵 搜索结果(网易云音乐)：\n"
+            for idx, song in enumerate(songs, start=1):
+                result += f"{idx}. 🎤 歌曲名: {song['name']}\n"
+                result += f"   🆔 歌曲ID: {song['id']}\n"
+                result += f"   🎙️ 歌手: {', '.join(song['artists'])}\n"
+                result += f"   📀 专辑: {song['album']}\n"
+                result += f"   链接: https://music.163.com/#/song?id={song['id']}\n"
+            return result
+        except Exception as e:
+            return event.plain_result(f"搜索过程中出现错误: {e}")
