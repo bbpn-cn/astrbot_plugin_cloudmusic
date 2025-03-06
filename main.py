@@ -46,9 +46,9 @@ class CloudMusicPlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)
     
-    @filter.command("songp")
+    @filter.command("音乐")
     async def get_song(self, event: AstrMessageEvent):
-        '''搜索音乐并以精美的图片卡片输出，附带热评。/songp song_name'''
+        '''搜索音乐并以精美的图片卡片输出，附带热评。'''
         tokens = self.parse_commands(event.message_str)
         if tokens.len < 2:
             yield event.plain_result("请输入音乐名。")
@@ -83,9 +83,9 @@ class CloudMusicPlugin(Star):
         finally:
             await api.close()
                         
-    @filter.command("song")
+    @filter.command("音乐模糊")
     async def get_song_list(self, event: AstrMessageEvent):
-        '''搜索音乐并输出前 3 条文本的歌曲信息。/song song_name'''
+        '''搜索音乐并输出前 3 条文本的歌曲信息。'''
         tokens = self.parse_commands(event.message_str)
         if tokens.len < 2:
             yield event.plain_result("请输入音乐名。")
